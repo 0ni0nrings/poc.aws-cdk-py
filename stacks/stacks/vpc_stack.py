@@ -2,6 +2,8 @@ from aws_cdk import (
     # Duration,
     Stack,
     # aws_sqs as sqs,
+    aws_ec2 as ec2,
+    aws_ssm as ssm,
 )
 from constructs import Construct
 
@@ -17,3 +19,6 @@ class StacksStack(Stack):
         #     self, "StacksQueue",
         #     visibility_timeout=Duration.seconds(300),
         # )
+        
+        prj_name = self.node.try_get_context("project_name")
+        env_name = self.node.try_get_context("env")
