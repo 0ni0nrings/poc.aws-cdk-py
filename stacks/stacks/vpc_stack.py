@@ -43,7 +43,6 @@ class VPCStack(Stack):
         priv_subnets =[]
         for subnet in self.vpc.private_subnets:
             priv_subnets.append(subnet.subnet_id)
-        print(f"{priv_subnets}")
         
         count=1
         for priv_sub in priv_subnets:
