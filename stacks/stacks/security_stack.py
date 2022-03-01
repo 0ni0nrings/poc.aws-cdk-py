@@ -31,3 +31,36 @@ class SecurityStack(Stack):
         )
         
         self.bastion_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(22), 'SSH access') # ingress rule for bastion_sg
+        
+        lambda_role = iam.Role(self, 'lambdarole',
+            assumed_by = iam.ServicePrincipal(service='lambda.amazonaws.com'),
+            role_name = 'lambda-role',
+            managed_policies = [iam.ManagedPolicy.from_aws_managed_policy_name(
+                managed_policy_name = 'service-role/AWSLambdaBasicExecutionRole'
+            )]
+        )
+        
+        # inline policy
+        lambda_role.add_to_policy( 
+            statement = iam.PolicyStatement(
+                actions = ['s3:*', 'rds:*'],
+                resources = ['*']
+            )
+        )
+        
+        # SSM paramaters
+        ssm.StringParameter(self, 'lambdasg-param',
+            parameter_name = '/' + env_name + '/lambda-sg',
+            string_value = lambda_sg.security_group_id
+        )
+        
+        ssm.StringParameter(self, 'lambdarole-param-arn',
+            parameter_name = '/' + env_name + '/lambda-role-arn',
+            string_value = lambda_role.role_arn
+        )
+        
+        ssm.StringParameter(self, 'lambdasg-param-name',
+            parameter_name = '/' + env_name + '/lambda-role-name',
+            string_value = lambda_role.role_name
+        )
+        
