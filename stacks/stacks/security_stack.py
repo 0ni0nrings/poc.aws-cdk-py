@@ -22,3 +22,12 @@ class SecurityStack(Stack):
             description = 'security group for lambda function',
             allow_all_outbound = True
         )
+        
+        bastion_sg = ec2.SecurityGroup(self, 'bastion_sg',
+            security_group_name = 'bastion_sg',
+            vpc=vpc,
+            description = 'security group for bastion host',
+            allow_all_outbound = True
+        )
+        
+        self.bastion_sg.add_ingress_rule(ec2.Peer.any_ipv4(), ec2.Port.tcp(22), 'SSH access') # ingress rule for bastion_sg
