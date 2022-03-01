@@ -23,7 +23,7 @@ class SecurityStack(Stack):
             allow_all_outbound = True
         )
         
-        bastion_sg = ec2.SecurityGroup(self, 'bastion_sg',
+        self.bastion_sg = ec2.SecurityGroup(self, 'bastion_sg', # using self to attach rules
             security_group_name = 'bastion_sg',
             vpc=vpc,
             description = 'security group for bastion host',
